@@ -71,6 +71,20 @@ h1.hero-title em{font-style:normal;color:var(--accent)}
 .proof-label{font-size:11.5px;color:var(--text3);margin-top:4px;font-weight:500;line-height:1.4}
 .proof-divider{width:1px;background:var(--border);align-self:stretch;flex-shrink:0}
 
+/* ANDROID DOWNLOAD BUTTON */
+.btn-android{display:inline-flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:#fff;background:linear-gradient(135deg,#16803a 0%,#22c55e 100%);padding:10px 20px;border-radius:var(--r-sm);transition:all .22s cubic-bezier(.4,0,.2,1);border:1px solid rgba(34,197,94,.22);cursor:pointer;text-decoration:none;position:relative;overflow:hidden;box-shadow:0 2px 14px rgba(34,197,94,.13)}
+.btn-android::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 55%);pointer-events:none;transition:opacity .2s}
+.btn-android:hover{background:linear-gradient(135deg,#1a9b44 0%,#2dd563 100%);box-shadow:0 6px 24px rgba(34,197,94,.3);transform:translateY(-2px) scale(1.012);border-color:rgba(34,197,94,.42)}
+.btn-android:hover::before{opacity:.5}
+.btn-android:active{transform:translateY(0) scale(1);box-shadow:0 2px 8px rgba(34,197,94,.15)}
+.btn-android-ic{width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.btn-android-ic svg{width:22px;height:22px}
+.btn-android-label{display:flex;flex-direction:column;line-height:1;gap:3px}
+.btn-android-sup{font-size:9px;font-weight:600;opacity:.8;letter-spacing:.35px;text-transform:uppercase}
+.btn-android-main{font-size:14px;font-weight:700;letter-spacing:-.1px}
+.hero-android-wrap{margin-top:14px}
+@media(max-width:480px){.btn-android{width:100%;justify-content:center}.hero-android-wrap{margin-top:12px}}
+
 /* HERO PREVIEW */
 .hero-detector{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.03)}
 .hd-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:7px}
@@ -390,6 +404,31 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 28p
         </a>
         <a href="#howitworks" class="btn-outline">How it works</a>
       </div>
+      <!-- ANDROID DOWNLOAD BUTTON -->
+      <div class="hero-android-wrap">
+        <a href="https://github.com/ronak6609-ops/TruthLens--APK-/releases/download/v1/TruthLensv2.apk"
+           class="btn-android"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Download TruthLens APK for Android">
+          <div class="btn-android-ic" aria-hidden="true">
+            <!-- Android robot icon -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 18V11C6 7.686 8.686 5 12 5C15.314 5 18 7.686 18 11V18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <rect x="4" y="11" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M9 22V20M15 22V20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <path d="M2 14H4M20 14H22" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <path d="M8.5 3.5L7 2M15.5 3.5L17 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <circle cx="9.5" cy="13" r="1" fill="currentColor"/>
+              <circle cx="14.5" cy="13" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="btn-android-label">
+            <span class="btn-android-sup">Download Free · v2.0</span>
+            <span class="btn-android-main">Get Android App</span>
+          </div>
+        </a>
+      </div>
       <div class="hero-proof" aria-label="Key statistics">
         <div class="proof-item">
           <div class="proof-num">4</div>
@@ -628,7 +667,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 28p
             <div class="rp-err-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
             <h4>Backend Unreachable</h4>
             <p>Start the detection service to enable live analysis:</p>
-            <div class="rp-error-cmd">uvicorn main:app --port 8000</div>
+            <div class="rp-error-cmd">https://truthlens-backend-production-a5a7.up.railway.app</div>
             <button class="btn-outline" style="margin-top:10px;font-size:12.5px;padding:8px 16px" onclick="resetResult()">Dismiss</button>
           </div>
         </div>
@@ -688,7 +727,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 28p
 <pre><span class="c-c"># Detect AI-generated content</span>
 <span class="c-k">import</span> requests
 
-url = <span class="c-s">"http://localhost:8000/detect/image"</span>
+url = <span class="c-s">"https://truthlens-backend-production-a5a7.up.railway.app/detect/image"</span>
 files = {<span class="c-s">"file"</span>: open(<span class="c-s">"photo.jpg"</span>, <span class="c-s">"rb"</span>)}
 
 res = requests.post(url, files=files)
@@ -766,12 +805,9 @@ result = res.json()[<span class="c-s">"result"</span>]
 
 <script>
 // ─────────────────────────────────────────────────────────
-// API CONFIGURATION
-// Set API_BASE_URL to your deployed backend URL after deployment.
-// Example: const API_BASE_URL = 'https://truthlens.onrender.com';
-// For local dev, leave as empty string (proxied via same origin or localhost:8000).
+// API CONFIGURATION — Railway production backend
 // ─────────────────────────────────────────────────────────
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = 'https://truthlens-backend-production-a5a7.up.railway.app';
 
 const ENDPOINTS = {
   image: `${API_BASE_URL}/detect/image`,
@@ -780,7 +816,24 @@ const ENDPOINTS = {
   news:  `${API_BASE_URL}/detect/news`,
 };
 
-const SCAN_TIMEOUT_MS = 60000; // 60s for video
+const SCAN_TIMEOUT_MS = 90000; // 90s — allows for Railway cold-start
+
+// Shared fetch wrapper with CORS + error handling
+async function apiFetch(url, formData, signal) {
+  const res = await fetch(url, {
+    method: 'POST',
+    body: formData,
+    signal,
+    mode: 'cors',
+    credentials: 'omit',
+  });
+  if (!res.ok) {
+    let detail = `Server error ${res.status}`;
+    try { const j = await res.json(); detail = j.detail || j.message || detail; } catch (_) {}
+    throw new Error(detail);
+  }
+  return res.json();
+}
 
 // ─── TOAST ────────────────────────────────────────────────
 function showToast(msg, type = '') {
@@ -1063,14 +1116,9 @@ async function doScan() {
   try {
     const form = new FormData();
     form.append('file', selFile);
-    const res = await fetch(endpoint, { method: 'POST', body: form, signal: controller.signal });
+    const d = await apiFetch(endpoint, form, controller.signal);
     clearTimeout(timeout);
     finishProgress();
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.detail || `Server error ${res.status}`);
-    }
-    const d = await res.json();
     const r = d.result;
     const aiScore = r.fake_score ?? r.ai_score ?? (r.is_ai_generated ? r.confidence : 100 - r.confidence);
     const realScore = r.real_score ?? (100 - aiScore);
@@ -1081,8 +1129,8 @@ async function doScan() {
     finishProgress();
     if (e.name === 'AbortError') {
       showError('Analysis timed out. The backend may be overloaded — try again.');
-    } else if (e.message === 'Failed to fetch') {
-      document.getElementById('rpError').querySelector('p').textContent = 'Start the backend to enable live detection:';
+    } else if (e.message === 'Failed to fetch' || e.message.includes('NetworkError') || e.message.includes('CORS')) {
+      document.getElementById('rpError').querySelector('p').textContent = 'Could not reach the TruthLens backend. Check your connection or try again in a moment.';
       showError(null);
     } else {
       showError(e.message);
@@ -1108,13 +1156,8 @@ async function doNewsScan() {
   try {
     const form = new FormData();
     form.append('text', text);
-    const res = await fetch(ENDPOINTS.news, { method: 'POST', body: form, signal: controller.signal });
+    const d = await apiFetch(ENDPOINTS.news, form, controller.signal);
     clearTimeout(timeout);
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.detail || `Server error ${res.status}`);
-    }
-    const d = await res.json();
     const r = d.result;
     const isFake = r.is_fake ?? r.label === 'FAKE';
     const conf = r.confidence ?? 50;
