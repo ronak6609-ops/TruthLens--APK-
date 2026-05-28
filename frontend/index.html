@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="TruthLens — AI authenticity detection for images, video, audio, and news.">
+<meta name="theme-color" content="#0B1020">
+<title>TruthLens — AI Authenticity Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1020;--bg2:#0E1528;--surface:#141C2E;--surface2:#1A2340;
+  --border:#1E2D4A;--border2:#263556;--accent:#4F8CFF;--accent-h:#3a78f0;
+  --accent-dim:rgba(79,140,255,.08);--accent-mid:rgba(79,140,255,.15);
+  --success:#22C55E;--success-dim:rgba(34,197,94,.09);
+  --warning:#F59E0B;--danger:#EF4444;--danger-dim:rgba(239,68,68,.09);
+  --purple:#8B5CF6;--purple-dim:rgba(139,92,246,.09);
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#4B5B7A;
+  --r:10px;--r-sm:7px;--r-lg:14px;--transition:.18s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;height:58px;display:flex;align-items:center;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(11,16,32,.9);transition:border-color .3s}
+nav.scrolled{border-bottom-color:var(--border2);box-shadow:0 1px 20px rgba(0,0,0,.3)}
+.nav-inner{max-width:1200px;margin:0 auto;width:100%;padding:0 28px;display:flex;align-items:center;gap:40px}
+.nav-logo{font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:9px;letter-spacing:-.2px;flex-shrink:0}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:grid;place-items:center;flex-shrink:0;box-shadow:0 2px 12px rgba(79,140,255,.3)}
+.logo-icon svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none;flex:1}
+.nav-links a{font-size:13.5px;color:var(--text2);padding:6px 11px;border-radius:var(--r-sm);transition:color var(--transition),background var(--transition);font-weight:500;display:block}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:rgba(255,255,255,.05)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.nav-github{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);padding:6px 12px;border-radius:var(--r-sm);border:1px solid var(--border);transition:all var(--transition);font-weight:500}
+.nav-github svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.nav-github:hover{color:var(--text);border-color:var(--border2);background:var(--surface)}
+.nav-cta{font-size:13.5px;color:#fff;background:var(--accent);padding:7px 18px;border-radius:var(--r-sm);font-weight:600;border:none;cursor:pointer;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.nav-cta:hover{background:var(--accent-h);box-shadow:0 4px 16px rgba(79,140,255,.3);transform:translateY(-1px)}
+.nav-cta svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5}
+.nav-mob-menu{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:var(--r-sm);transition:background var(--transition)}
+.nav-mob-menu:hover{background:rgba(255,255,255,.06)}
+.nav-mob-menu svg{width:20px;height:20px;stroke:var(--text2);fill:none;stroke-width:2}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 28px 72px;position:relative;overflow:hidden}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(79,140,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,140,255,.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none}
+.hero-glow{position:absolute;top:-5%;right:-5%;width:55%;height:80%;background:radial-gradient(ellipse at 70% 30%,rgba(79,140,255,.06) 0%,transparent 60%);pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.05fr .95fr;gap:72px;align-items:center;position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(79,140,255,.18);padding:4px 12px;border-radius:100px;margin-bottom:22px;letter-spacing:.2px}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-title{font-family:'Manrope',sans-serif;font-size:clamp(38px,4.8vw,58px);font-weight:800;line-height:1.1;letter-spacing:-.9px;margin-bottom:20px;color:var(--text)}
+h1.hero-title em{font-style:normal;color:var(--accent)}
+.hero-desc{font-size:16px;color:var(--text2);line-height:1.78;max-width:460px;margin-bottom:36px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-accent{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#fff;background:var(--accent);padding:11px 22px;border-radius:var(--r-sm);transition:all .2s;border:none;cursor:pointer;text-decoration:none}
+.btn-accent svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.5;transition:transform .2s}
+.btn-accent:hover{background:var(--accent-h);box-shadow:0 6px 20px rgba(79,140,255,.28);transform:translateY(-1px)}
+.btn-accent:hover svg{transform:translateX(2px)}
+.btn-outline{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--text2);padding:11px 22px;border-radius:var(--r-sm);border:1px solid var(--border2);background:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-outline:hover{color:var(--text);border-color:rgba(79,140,255,.4);background:rgba(79,140,255,.05)}
+.hero-proof{display:flex;gap:28px;margin-top:44px;padding-top:32px;border-top:1px solid var(--border)}
+.proof-num{font-family:'Manrope',sans-serif;font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1}
+.proof-label{font-size:11.5px;color:var(--text3);margin-top:4px;font-weight:500;line-height:1.4}
+.proof-divider{width:1px;background:var(--border);align-self:stretch;flex-shrink:0}
+
+/* HERO PREVIEW */
+.hero-detector{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.03)}
+.hd-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:7px}
+.hd-dot{width:9px;height:9px;border-radius:50%}.hd-dot.r{background:#EF4444}.hd-dot.y{background:#F59E0B}.hd-dot.g{background:#22C55E}
+.hd-bar-title{font-size:11.5px;color:var(--text3);font-weight:500;margin:0 auto}
+.hd-body{padding:18px}
+.hd-upload{border:1.5px dashed var(--border2);border-radius:var(--r-sm);padding:22px 14px;text-align:center;background:rgba(11,16,32,.4)}
+.hd-upload-ic{width:36px;height:36px;background:var(--surface2);border-radius:var(--r-sm);display:grid;place-items:center;margin:0 auto 10px}
+.hd-upload-ic svg{width:18px;height:18px;stroke:var(--text2);fill:none;stroke-width:1.8}
+.hd-upload-txt{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:3px}
+.hd-upload-sub{font-size:10.5px;color:var(--text3)}
+.hd-fmt{display:flex;gap:4px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.hd-fmt-badge{font-size:9.5px;font-weight:600;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:4px}
+.hd-tabs{display:flex;gap:3px;margin-top:14px;background:rgba(11,16,32,.6);border-radius:var(--r-sm);padding:3px}
+.hd-tab{flex:1;padding:6px 4px;font-size:11px;font-weight:600;border:none;border-radius:6px;cursor:default;background:none;color:var(--text3);transition:all .15s}
+.hd-tab.on{background:var(--surface2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.hd-scan-btn{width:100%;margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);padding:10px;font-size:13px;font-weight:700;cursor:default;letter-spacing:.2px}
+.hd-result{margin-top:12px;background:var(--success-dim);border:1px solid rgba(34,197,94,.18);border-radius:var(--r-sm);padding:11px 13px;display:flex;align-items:center;justify-content:space-between}
+.hd-res-tag{font-size:10px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.hd-res-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--success);flex-shrink:0}
+.hd-res-label{font-size:13px;font-weight:700;color:var(--text)}
+.hd-res-sub{font-size:10.5px;color:var(--text3);margin-top:1px}
+.hd-res-score{font-family:'Manrope',sans-serif;font-size:26px;font-weight:800;color:var(--success);letter-spacing:-1px}
+.hd-bars{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.hd-bar-row{display:flex;align-items:center;gap:8px}
+.hd-bar-lbl{font-size:10.5px;color:var(--text3);width:52px;flex-shrink:0;font-weight:500}
+.hd-bar-track{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden}
+.hd-bar-fill{height:100%;border-radius:2px}
+.hd-bar-fill.s{background:var(--success);width:94%}.hd-bar-fill.d{background:var(--danger);width:6%}
+.hd-bar-pct{font-size:10.5px;font-weight:700;color:var(--text2);width:28px;text-align:right}
+
+/* SECTIONS */
+section.s{padding:88px 28px;border-top:1px solid var(--border)}
+.s-inner{max-width:1200px;margin:0 auto}
+.s-label{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.s-label svg{width:13px;height:13px;stroke:var(--accent);fill:none;stroke-width:2}
+.s-title{font-family:'Manrope',sans-serif;font-size:clamp(26px,2.8vw,36px);font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:12px}
+.s-sub{font-size:15px;color:var(--text2);max-width:500px;line-height:1.75}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:48px}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 22px;transition:border-color .2s,background .2s,transform .2s;cursor:default;position:relative;overflow:hidden}
+.feat-card:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.feat-card:hover::before{opacity:1}
+.feat-card.c-blue::before{background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.feat-card.c-amber::before{background:linear-gradient(90deg,transparent,var(--warning),transparent)}
+.feat-card.c-purple::before{background:linear-gradient(90deg,transparent,var(--purple),transparent)}
+.feat-card.c-green::before{background:linear-gradient(90deg,transparent,var(--success),transparent)}
+.feat-ic{width:38px;height:38px;border-radius:var(--r-sm);display:grid;place-items:center;margin-bottom:16px}
+.feat-ic svg{width:19px;height:19px;fill:none;stroke-width:1.8}
+.feat-ic.blue{background:rgba(79,140,255,.12)}.feat-ic.blue svg{stroke:var(--accent)}
+.feat-ic.amber{background:rgba(245,158,11,.1)}.feat-ic.amber svg{stroke:var(--warning)}
+.feat-ic.purple{background:rgba(139,92,246,.1)}.feat-ic.purple svg{stroke:var(--purple)}
+.feat-ic.green{background:rgba(34,197,94,.1)}.feat-ic.green svg{stroke:var(--success)}
+.feat-name{font-size:14px;font-weight:700;margin-bottom:7px;color:var(--text)}
+.feat-desc{font-size:12.5px;color:var(--text2);line-height:1.65}
+.feat-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;margin-top:12px;padding:2px 8px;border-radius:4px}
+.feat-badge.new{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.25)}
+
+/* SCANNER */
+.scanner-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px;align-items:start}
+.scan-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.scan-panel-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.scan-panel-title{font-size:13px;font-weight:700;color:var(--text)}
+.scan-badge{font-size:10.5px;font-weight:600;color:var(--success);background:var(--success-dim);border:1px solid rgba(34,197,94,.18);padding:2px 9px;border-radius:100px;display:flex;align-items:center;gap:4px}
+.scan-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--success)}
+.scan-tabs{display:flex;gap:6px;padding:16px 20px 0}
+.scan-tab{padding:7px 13px;font-size:12.5px;font-weight:600;border:1px solid var(--border);border-radius:var(--r-sm);background:none;cursor:pointer;color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:5px}
+.scan-tab svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.scan-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scan-tab:hover:not(.active){border-color:var(--border2);color:var(--text)}
+.scan-body{padding:18px 20px}
+.drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r-sm);padding:38px 20px;text-align:center;cursor:pointer;transition:all .22s;background:rgba(11,16,32,.4);position:relative}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-zone.drag-over,.drop-zone:hover{border-color:var(--accent);background:var(--accent-dim)}
+.drop-ic{width:42px;height:42px;background:var(--surface2);border-radius:var(--r-sm);display:grid;place-items:center;margin:0 auto 12px;transition:background .2s}
+.drop-zone:hover .drop-ic,.drop-zone.drag-over .drop-ic{background:var(--accent-mid)}
+.drop-ic svg{width:21px;height:21px;stroke:var(--text2);fill:none;stroke-width:1.8;transition:stroke .2s}
+.drop-zone:hover .drop-ic svg,.drop-zone.drag-over .drop-ic svg{stroke:var(--accent)}
+.drop-main{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.drop-sub{font-size:12px;color:var(--text3)}
+.fmt-tags{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.fmt-tag{font-size:10px;font-weight:600;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px}
+.preview-wrap{border-radius:var(--r-sm);overflow:hidden;display:none;position:relative}
+.preview-wrap img{width:100%;height:180px;object-fit:cover;display:block}
+.preview-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.65);border:none;border-radius:5px;padding:4px 10px;color:var(--text2);font-size:11px;cursor:pointer;font-weight:600;transition:color .15s;backdrop-filter:blur(4px)}
+.preview-remove:hover{color:#fff}
+.audio-preview{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-top:2px}
+.audio-waveform{height:48px;display:flex;align-items:flex-end;gap:2px;margin-bottom:10px}
+.wf-bar{flex:1;background:var(--border2);border-radius:2px;min-height:4px;animation:wf-idle 1.8s ease-in-out infinite}
+@keyframes wf-idle{0%,100%{opacity:.4}50%{opacity:.7}}
+.audio-file-name{font-size:12px;font-weight:600;color:var(--text2)}
+.audio-file-dur{font-size:11px;color:var(--text3)}
+.audio-file-info{display:flex;align-items:center;justify-content:space-between}
+.news-ta{width:100%;min-height:150px;background:rgba(11,16,32,.5);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:13px;resize:vertical;outline:none;transition:border-color .2s;line-height:1.72}
+.news-ta:focus{border-color:var(--accent)}
+.news-ta::placeholder{color:var(--text3)}
+.wc-row{display:flex;justify-content:space-between;margin-top:7px}
+.wc-txt{font-size:11px;color:var(--text3);font-weight:500}
+.action-row{display:flex;gap:10px;align-items:center;margin-top:14px}
+.scan-btn{flex:1;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);padding:11px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.1px;position:relative;overflow:hidden}
+.scan-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.5}
+.scan-btn:hover:not(:disabled){background:var(--accent-h);box-shadow:0 4px 18px rgba(79,140,255,.28);transform:translateY(-1px)}
+.scan-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.scan-btn.loading{opacity:.8;cursor:wait}
+.enc-note{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.enc-note svg{width:11px;height:11px;stroke:var(--text3);fill:none;stroke-width:2}
+.upload-progress{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;margin-top:10px}
+.up-label{font-size:11.5px;color:var(--text2);font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.up-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.up-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s ease}
+
+/* RESULT PANEL */
+.result-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;min-height:440px;display:flex;flex-direction:column}
+.rp-hd{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.rp-hd-title{font-size:13px;font-weight:700;color:var(--text)}
+.rp-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);font-weight:500}
+.rp-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);transition:all .3s}
+.rp-dot.scanning{background:var(--accent);box-shadow:0 0 0 3px rgba(79,140,255,.15);animation:blink 1.2s ease infinite}
+.rp-dot.success{background:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.rp-dot.danger{background:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+.rp-body{flex:1;display:flex;flex-direction:column}
+.rp-idle{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:48px 28px;text-align:center}
+.rp-idle-ic{width:52px;height:52px;border:1.5px solid var(--border);border-radius:var(--r);display:grid;place-items:center;background:var(--surface2)}
+.rp-idle-ic svg{width:24px;height:24px;stroke:var(--text3);fill:none;stroke-width:1.5}
+.rp-idle h4{font-size:14px;font-weight:600;color:var(--text2)}
+.rp-idle p{font-size:12.5px;color:var(--text3);line-height:1.55}
+.rp-loading{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:48px}
+.rp-spinner{width:46px;height:46px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rp-steps{width:100%;max-width:200px;display:flex;flex-direction:column;gap:8px}
+.rp-step{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--text3);opacity:.35;transition:opacity .3s}
+.rp-step.done{color:var(--success);opacity:1}
+.rp-step.active{color:var(--text2);opacity:1}
+.rp-step svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;flex-shrink:0}
+.rp-result{flex:1;display:none;flex-direction:column;padding:18px;gap:16px}
+.verdict-card{padding:14px 16px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:space-between}
+.verdict-card.ai{background:var(--danger-dim);border:1px solid rgba(239,68,68,.2)}
+.verdict-card.real{background:var(--success-dim);border:1px solid rgba(34,197,94,.2)}
+.verdict-card.audio-ai{background:var(--purple-dim);border:1px solid rgba(139,92,246,.2)}
+.verdict-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.verdict-card.ai .verdict-eyebrow{color:var(--danger)}
+.verdict-card.real .verdict-eyebrow{color:var(--success)}
+.verdict-card.audio-ai .verdict-eyebrow{color:var(--purple)}
+.verdict-name{font-family:'Manrope',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.4px}
+.verdict-card.ai .verdict-name{color:var(--danger)}
+.verdict-card.real .verdict-name{color:var(--success)}
+.verdict-card.audio-ai .verdict-name{color:var(--purple)}
+.verdict-conf{font-size:11px;color:var(--text3);margin-top:3px}
+.verdict-ic{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.verdict-card.ai .verdict-ic{background:rgba(239,68,68,.15)}
+.verdict-card.real .verdict-ic{background:rgba(34,197,94,.15)}
+.verdict-card.audio-ai .verdict-ic{background:rgba(139,92,246,.15)}
+.verdict-ic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+.verdict-card.ai .verdict-ic svg{stroke:var(--danger)}
+.verdict-card.real .verdict-ic svg{stroke:var(--success)}
+.verdict-card.audio-ai .verdict-ic svg{stroke:var(--purple)}
+.scores-hd{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.score-lbl{font-size:12px;color:var(--text2);font-weight:500;width:80px;flex-shrink:0}
+.score-track{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;transition:width 1.3s cubic-bezier(.4,0,.2,1);width:0%}
+.score-fill.d{background:var(--danger)}.score-fill.s{background:var(--success)}.score-fill.p{background:var(--purple)}
+.score-pct{font-size:12px;font-weight:700;color:var(--text);width:36px;text-align:right;font-family:'Manrope',sans-serif}
+.analysis-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:12.5px;color:var(--text2);line-height:1.65}
+.rp-warn{font-size:11px;color:var(--text3);display:flex;align-items:flex-start;gap:6px;line-height:1.55}
+.rp-warn svg{width:12px;height:12px;stroke:var(--text3);fill:none;stroke-width:2;flex-shrink:0;margin-top:1px}
+.rp-error{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px;text-align:center}
+.rp-err-ic{width:46px;height:46px;border-radius:var(--r-sm);background:var(--danger-dim);border:1px solid rgba(239,68,68,.2);display:grid;place-items:center}
+.rp-err-ic svg{width:22px;height:22px;stroke:var(--danger);fill:none;stroke-width:1.8}
+.rp-error h4{font-size:14px;font-weight:700;color:var(--text)}
+.rp-error p{font-size:13px;color:var(--text2);line-height:1.6}
+.rp-error-cmd{font-family:'Menlo','Monaco',monospace;font-size:12px;color:var(--accent);background:var(--bg2);border:1px solid var(--border);padding:9px 14px;border-radius:var(--r-sm);margin-top:6px;white-space:nowrap;cursor:text;user-select:all}
+
+/* HOW IT WORKS */
+.how-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:48px}
+.how-step{background:var(--surface);padding:32px 28px}
+.how-step:last-child{background:var(--surface2)}
+.how-num{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.how-num::before{content:'';width:18px;height:1px;background:var(--accent)}
+.how-ic{width:40px;height:40px;border-radius:var(--r-sm);display:grid;place-items:center;margin-bottom:14px}
+.how-ic.plain{background:var(--surface2)}.how-ic.accent{background:var(--accent);box-shadow:0 4px 14px rgba(79,140,255,.28)}
+.how-ic svg{width:20px;height:20px;fill:none;stroke-width:1.8}
+.how-ic.plain svg{stroke:var(--text2)}.how-ic.accent svg{stroke:#fff}
+.how-step h4{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.how-step p{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* API */
+.api-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:48px}
+.code-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;font-family:'Menlo','Monaco','Courier New',monospace}
+.code-hd{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.code-lang{font-size:11.5px;color:var(--text2);font-weight:600;display:flex;align-items:center;gap:6px}
+.code-lang-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.code-copy{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:3px 9px;border-radius:5px;transition:color .15s;font-family:'Inter',sans-serif;font-weight:500}
+.code-copy:hover{color:var(--text)}
+.code-body{padding:18px 20px;overflow-x:auto}
+.code-body pre{font-size:12.5px;line-height:1.78;color:var(--text2);tab-size:2}
+.c-k{color:#93C5FD}.c-s{color:#86EFAC}.c-n{color:var(--accent)}.c-c{color:var(--text3)}
+.ep-list{display:flex;flex-direction:column;gap:7px;margin-bottom:24px}
+.ep-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 14px;font-size:12.5px;transition:border-color .15s}
+.ep-row:hover{border-color:var(--border2)}
+.ep-method{font-weight:700;color:var(--success);width:34px;flex-shrink:0;font-size:11.5px}
+.ep-path{font-family:monospace;color:var(--text);font-size:13px}
+.ep-note{color:var(--text3);margin-left:auto;font-size:11px}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 28px 0}
+.ft-inner{max-width:1200px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding-bottom:44px;border-bottom:1px solid var(--border)}
+.ft-brand-wrap{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ft-brand-name{font-family:'Manrope',sans-serif;font-size:15px;font-weight:800;color:var(--text)}
+.ft-tagline{font-size:13px;color:var(--text3);line-height:1.7;max-width:260px}
+.ft-col-title{font-size:11.5px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.ft-link{display:block;font-size:13.5px;color:var(--text3);margin-bottom:9px;transition:color .15s}
+.ft-link:hover{color:var(--text)}
+.ft-bottom{padding:18px 0;display:flex;align-items:center;justify-content:space-between}
+.ft-copy{font-size:12px;color:var(--text3)}
+.ft-right{display:flex;align-items:center;gap:14px}
+.ft-gh{font-size:12.5px;color:var(--text3);display:flex;align-items:center;gap:6px;transition:color .15s}
+.ft-gh:hover{color:var(--text)}
+.ft-gh svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.ft-ver{font-size:11px;color:var(--text3);border:1px solid var(--border);padding:3px 10px;border-radius:100px;font-weight:500}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 18px;font-size:13px;font-weight:600;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:999;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{color:var(--success)}#toast.danger{color:var(--danger)}
+
+/* FADE */
+.fu{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.fu.in{opacity:1;transform:translateY(0)}
+
+/* MOBILE */
+.mob-nav{position:fixed;inset:0;z-index:590;background:rgba(7,10,22,.75);backdrop-filter:blur(8px);display:none;opacity:0;transition:opacity .25s}
+.mob-nav.open{display:block}.mob-nav.visible{opacity:1}
+.mob-nav-panel{position:absolute;top:58px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 0;transform:translateY(-8px);transition:transform .25s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.mob-nav.visible .mob-nav-panel{transform:translateY(0);pointer-events:auto}
+.mob-nav-link{display:block;font-size:14px;font-weight:500;color:var(--text2);padding:12px 24px;transition:color .15s,background .15s}
+.mob-nav-link:hover{color:var(--text);background:rgba(255,255,255,.04)}
+
+@media(max-width:1100px){
+  .feat-grid{grid-template-columns:repeat(2,1fr)!important}
+  .hero-inner,.scanner-wrap,.api-grid{grid-template-columns:1fr}
+  .how-strip{grid-template-columns:1fr}
+  .ft-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-inner{padding:0 16px}.nav-links{display:none}.nav-mob-menu{display:block}
+  .hero{padding:80px 18px 60px}
+  section.s{padding:64px 18px}
+  .feat-grid{grid-template-columns:1fr 1fr!important}
+  footer{padding:44px 18px 0}.ft-top{grid-template-columns:1fr}
+}
+@media(max-width:480px){.feat-grid{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav" onclick="closeMobNav()" role="dialog" aria-label="Navigation">
+  <div class="mob-nav-panel">
+    <a href="#features" class="mob-nav-link" onclick="closeMobNav()">Features</a>
+    <a href="#scan" class="mob-nav-link" onclick="closeMobNav()">Detector</a>
+    <a href="#api" class="mob-nav-link" onclick="closeMobNav()">API</a>
+    <a href="https://github.com/truthlens" class="mob-nav-link" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" aria-label="TruthLens home">
+      <div class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      TruthLens
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#scan">Detector</a></li>
+      <li><a href="#api">API</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="https://github.com/truthlens" class="nav-github" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+      <a href="#scan" class="nav-cta" aria-label="Try the live detector">
+        Try Detector
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <button class="nav-mob-menu" onclick="toggleMobNav()" aria-label="Open navigation menu" aria-expanded="false" id="mobMenuBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="heroTitle">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot" aria-hidden="true"></span>Now in public beta · v1.2
+      </div>
+      <h1 class="hero-title" id="heroTitle">Detect <em>AI-generated content</em> across images, video, audio, and news.</h1>
+      <p class="hero-desc">Four state-of-the-art detection models in a single platform. Identify synthetic media in seconds — no account required.</p>
+      <div class="hero-ctas">
+        <a href="#scan" class="btn-accent">
+          Run a Scan
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="#howitworks" class="btn-outline">How it works</a>
+      </div>
+      <div class="hero-proof" aria-label="Key statistics">
+        <div class="proof-item">
+          <div class="proof-num">4</div>
+          <div class="proof-label">Detection engines</div>
+        </div>
+        <div class="proof-divider" aria-hidden="true"></div>
+        <div class="proof-item">
+          <div class="proof-num">&lt;2s</div>
+          <div class="proof-label">Analysis time</div>
+        </div>
+        <div class="proof-divider" aria-hidden="true"></div>
+        <div class="proof-item">
+          <div class="proof-num">Free</div>
+          <div class="proof-label">No account needed</div>
+        </div>
+        <div class="proof-divider" aria-hidden="true"></div>
+        <div class="proof-item">
+          <div class="proof-num">MIT</div>
+          <div class="proof-label">Open source</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right" aria-hidden="true">
+      <div class="hero-detector">
+        <div class="hd-bar">
+          <div class="hd-dot r"></div><div class="hd-dot y"></div><div class="hd-dot g"></div>
+          <span class="hd-bar-title">TruthLens — Authenticity Detector</span>
+        </div>
+        <div class="hd-body">
+          <div class="hd-upload">
+            <div class="hd-upload-ic"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <div class="hd-upload-txt">Drop file or click to upload</div>
+            <div class="hd-upload-sub">Images, video, audio, or text</div>
+            <div class="hd-fmt">
+              <span class="hd-fmt-badge">JPG</span><span class="hd-fmt-badge">PNG</span><span class="hd-fmt-badge">MP4</span><span class="hd-fmt-badge">MP3</span><span class="hd-fmt-badge">WAV</span>
+            </div>
+          </div>
+          <div class="hd-tabs">
+            <button class="hd-tab on">Image</button><button class="hd-tab">Video</button><button class="hd-tab">Audio</button><button class="hd-tab">News</button>
+          </div>
+          <button class="hd-scan-btn">Analyze Content</button>
+          <div class="hd-result">
+            <div>
+              <div class="hd-res-tag">Authentic Media</div>
+              <div class="hd-res-label">Real Image</div>
+              <div class="hd-res-sub">No synthetic signatures detected</div>
+            </div>
+            <div class="hd-res-score">94.2%</div>
+          </div>
+          <div class="hd-bars">
+            <div class="hd-bar-row"><span class="hd-bar-lbl">Real</span><div class="hd-bar-track"><div class="hd-bar-fill s"></div></div><span class="hd-bar-pct">94%</span></div>
+            <div class="hd-bar-row"><span class="hd-bar-lbl">AI-Gen</span><div class="hd-bar-track"><div class="hd-bar-fill d"></div></div><span class="hd-bar-pct">6%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="s" id="features">
+  <div class="s-inner">
+    <div class="s-label">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Capabilities
+    </div>
+    <h2 class="s-title">Four detection engines. One platform.</h2>
+    <p class="s-sub">Purpose-built models for every type of synthetic media. Upload once, get a definitive verdict.</p>
+    <div class="feat-grid fu">
+      <div class="feat-card c-blue">
+        <div class="feat-ic blue"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="feat-name">Image Detection</div>
+        <p class="feat-desc">GAN fingerprints, pixel-level noise analysis, and frequency-domain artifacts. Covers Midjourney, DALL-E, Stable Diffusion, and Firefly.</p>
+      </div>
+      <div class="feat-card c-amber">
+        <div class="feat-ic amber"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="feat-name">Video Deepfake</div>
+        <p class="feat-desc">Temporal frame analysis across ten extracted frames. Scores are independently assessed and aggregated into a single confidence verdict.</p>
+      </div>
+      <div class="feat-card c-purple">
+        <div class="feat-ic purple"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <div class="feat-name">Audio Detection</div>
+        <p class="feat-desc">Spectrogram and waveform analysis for cloned voices and synthetic speech. Detects ElevenLabs, Tortoise TTS, VALL-E, and similar voice AI.</p>
+        <span class="feat-badge new">New</span>
+      </div>
+      <div class="feat-card c-green">
+        <div class="feat-ic green"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg></div>
+        <div class="feat-name">News Verification</div>
+        <p class="feat-desc">NLP trained on thousands of fact-checked statements. Paste any headline or article for a misinformation credibility score.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETECTOR -->
+<section class="s" id="scan" style="background:var(--bg2)">
+  <div class="s-inner">
+    <div class="s-label">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Live Detector
+    </div>
+    <h2 class="s-title">Try it right now</h2>
+    <p class="s-sub">Upload media or paste text. Encrypted in transit — zero retention.</p>
+    <div class="scanner-wrap">
+      <!-- UPLOAD PANEL -->
+      <div class="scan-panel" role="region" aria-label="Upload media for analysis">
+        <div class="scan-panel-hd">
+          <span class="scan-panel-title">Upload Media</span>
+          <div class="scan-badge">Encrypted · Zero Retention</div>
+        </div>
+        <div class="scan-tabs" role="tablist">
+          <button class="scan-tab active" role="tab" aria-selected="true" onclick="switchTab('image',this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image
+          </button>
+          <button class="scan-tab" role="tab" aria-selected="false" onclick="switchTab('video',this)">
+            <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video
+          </button>
+          <button class="scan-tab" role="tab" aria-selected="false" onclick="switchTab('audio',this)">
+            <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Audio
+          </button>
+          <button class="scan-tab" role="tab" aria-selected="false" onclick="switchTab('news',this)">
+            <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>News
+          </button>
+        </div>
+        <div class="scan-body">
+          <!-- FILE TAB -->
+          <div id="tab-file">
+            <div class="drop-zone" id="dropZone" role="button" aria-label="Drop file or click to upload" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this)" aria-label="Select file">
+              <div class="drop-ic">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <div class="drop-main" id="dropMain">Drop image or click to upload</div>
+              <div class="drop-sub" id="dropSub">JPG, PNG, WEBP supported · Max 20MB</div>
+              <div class="fmt-tags" id="fmtTags">
+                <span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span><span class="fmt-tag">WEBP</span>
+              </div>
+            </div>
+            <div class="preview-wrap" id="previewWrap">
+              <img id="previewImg" src="" alt="Selected image preview">
+              <button class="preview-remove" onclick="clearFile()">Remove</button>
+            </div>
+            <div class="audio-preview" id="audioPreview">
+              <div class="audio-waveform" id="audioWaveform"></div>
+              <div class="audio-file-info">
+                <span class="audio-file-name" id="audioFileName">audio.mp3</span>
+                <span class="audio-file-dur" id="audioFileDur">—</span>
+              </div>
+            </div>
+            <div class="upload-progress" id="uploadProgress">
+              <div class="up-label"><span>Uploading…</span><span id="upPct">0%</span></div>
+              <div class="up-track"><div class="up-fill" id="upFill"></div></div>
+            </div>
+            <div class="action-row">
+              <button class="scan-btn" id="scanBtn" disabled onclick="doScan()">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Analyze
+              </button>
+              <span class="enc-note">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Private
+              </span>
+            </div>
+          </div>
+          <!-- NEWS TAB -->
+          <div id="tab-news" style="display:none">
+            <textarea class="news-ta" id="newsInput" placeholder="Paste a news headline or full article…" oninput="updateWC()" rows="6"></textarea>
+            <div class="wc-row">
+              <span class="wc-txt" id="wcCount">0 words</span>
+              <span class="wc-txt">Minimum 20 words</span>
+            </div>
+            <div class="action-row" style="margin-top:14px">
+              <button class="scan-btn" id="newsScanBtn" onclick="doNewsScan()">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Verify Content
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT PANEL -->
+      <div class="result-panel" role="region" aria-label="Analysis results" aria-live="polite">
+        <div class="rp-hd">
+          <span class="rp-hd-title">Analysis Result</span>
+          <div class="rp-status">
+            <div class="rp-dot" id="rpDot"></div>
+            <span id="rpStatusTxt">Idle</span>
+          </div>
+        </div>
+        <div class="rp-body">
+          <div class="rp-idle" id="rpIdle">
+            <div class="rp-idle-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <h4>Awaiting input</h4>
+            <p>Upload a file or paste text<br>to begin analysis.</p>
+          </div>
+          <div class="rp-loading" id="rpLoading">
+            <div class="rp-spinner"></div>
+            <div class="rp-steps">
+              <div class="rp-step done" id="st1"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Input received</div>
+              <div class="rp-step active" id="st2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Model inference</div>
+              <div class="rp-step" id="st3"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Generating report</div>
+            </div>
+          </div>
+          <div class="rp-result" id="rpResult">
+            <div class="verdict-card" id="verdictCard">
+              <div>
+                <div class="verdict-eyebrow" id="verdictEyebrow"></div>
+                <div class="verdict-name" id="verdictName"></div>
+                <div class="verdict-conf" id="verdictConf"></div>
+              </div>
+              <div class="verdict-ic" id="verdictIc">
+                <svg viewBox="0 0 24 24" id="verdictSvg"></svg>
+              </div>
+            </div>
+            <div>
+              <div class="scores-hd">Confidence Scores</div>
+              <div class="score-row">
+                <span class="score-lbl">AI-Generated</span>
+                <div class="score-track"><div class="score-fill d" id="aiBar"></div></div>
+                <span class="score-pct" id="aiPct">—</span>
+              </div>
+              <div class="score-row">
+                <span class="score-lbl" id="realLabel">Authentic</span>
+                <div class="score-track"><div class="score-fill s" id="realBar"></div></div>
+                <span class="score-pct" id="realPct">—</span>
+              </div>
+            </div>
+            <div class="analysis-box" id="analysisNote"></div>
+            <div class="rp-warn">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Results are probabilistic estimates. Apply independent judgment before acting on this analysis.
+            </div>
+          </div>
+          <div class="rp-error" id="rpError">
+            <div class="rp-err-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <h4>Backend Unreachable</h4>
+            <p>Start the detection service to enable live analysis:</p>
+            <div class="rp-error-cmd">uvicorn main:app --port 8000</div>
+            <button class="btn-outline" style="margin-top:10px;font-size:12.5px;padding:8px 16px" onclick="resetResult()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="s" id="howitworks">
+  <div class="s-inner">
+    <div class="s-label">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Process
+    </div>
+    <h2 class="s-title">From upload to verdict in three steps</h2>
+    <p class="s-sub">A transparent analysis pipeline — no black box, no guesswork.</p>
+    <div class="how-strip fu">
+      <div class="how-step">
+        <div class="how-num">Step 01</div>
+        <div class="how-ic plain"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <h4>Upload Your Media</h4>
+        <p>Drag and drop an image, video, audio clip, or paste a news article. Files are processed within your browser session — nothing is retained.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">Step 02</div>
+        <div class="how-ic plain"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h4>Model Inference</h4>
+        <p>The backend routes your input to the appropriate engine. Visual, audio, and text content are each handled by a specialized detection model.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">Step 03</div>
+        <div class="how-ic accent"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>Authenticity Report</h4>
+        <p>A verdict, dual confidence scores, and an analysis summary are returned in seconds — ready to act on or integrate via the API.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API -->
+<section class="s" id="api">
+  <div class="s-inner">
+    <div class="s-label">
+      <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Developer API
+    </div>
+    <h2 class="s-title">Integrate in minutes</h2>
+    <p class="s-sub">A clean REST API with consistent JSON responses. No SDK required — just HTTP.</p>
+    <div class="api-grid">
+      <div class="code-block fu">
+        <div class="code-hd">
+          <span class="code-lang"><span class="code-lang-dot"></span>Python</span>
+          <button class="code-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-body">
+<pre><span class="c-c"># Detect AI-generated content</span>
+<span class="c-k">import</span> requests
+
+url = <span class="c-s">"http://localhost:8000/detect/image"</span>
+files = {<span class="c-s">"file"</span>: open(<span class="c-s">"photo.jpg"</span>, <span class="c-s">"rb"</span>)}
+
+res = requests.post(url, files=files)
+result = res.json()[<span class="c-s">"result"</span>]
+
+<span class="c-c"># Response</span>
+<span class="c-k">print</span>(result[<span class="c-s">"label"</span>])         <span class="c-c"># "Real Image" or "AI Generated"</span>
+<span class="c-k">print</span>(result[<span class="c-s">"confidence"</span>])    <span class="c-c"># 0.0 – 100.0</span>
+<span class="c-k">print</span>(result[<span class="c-s">"fake_score"</span>])    <span class="c-c"># AI score</span>
+<span class="c-k">print</span>(result[<span class="c-s">"real_score"</span>])    <span class="c-c"># Real score</span></pre>
+        </div>
+      </div>
+      <div class="fu">
+        <h3 style="font-family:'Manrope',sans-serif;font-size:24px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px">Four endpoints.<br>Consistent schema.</h3>
+        <p style="font-size:14.5px;color:var(--text2);line-height:1.75;margin-bottom:20px">Every endpoint returns the same structured JSON — verdict, confidence, and scores. Easy to parse, easy to integrate. Same API powers the web and mobile app.</p>
+        <div class="ep-list">
+          <div class="ep-row"><span class="ep-method">POST</span><span class="ep-path">/detect/image</span><span class="ep-note">GAN / diffusion</span></div>
+          <div class="ep-row"><span class="ep-method">POST</span><span class="ep-path">/detect/video</span><span class="ep-note">Deepfake frames</span></div>
+          <div class="ep-row"><span class="ep-method">POST</span><span class="ep-path">/detect/audio</span><span class="ep-note">Voice cloning</span></div>
+          <div class="ep-row"><span class="ep-method">POST</span><span class="ep-path">/detect/news</span><span class="ep-note">Misinformation</span></div>
+        </div>
+        <a href="https://github.com/truthlens" class="btn-accent" target="_blank" rel="noopener noreferrer">
+          View on GitHub
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div>
+        <div class="ft-brand-wrap">
+          <div class="logo-icon" style="width:26px;height:26px;border-radius:7px" aria-hidden="true">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span class="ft-brand-name">TruthLens</span>
+        </div>
+        <p class="ft-tagline">AI authenticity detection for images, video, audio, and news. Open source and free forever.</p>
+      </div>
+      <div>
+        <div class="ft-col-title">Product</div>
+        <a href="#features" class="ft-link">Features</a>
+        <a href="#scan" class="ft-link">Live Detector</a>
+        <a href="#api" class="ft-link">API</a>
+      </div>
+      <div>
+        <div class="ft-col-title">Open Source</div>
+        <a href="https://github.com/truthlens" class="ft-link" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/truthlens/blob/main/CONTRIBUTING.md" class="ft-link" target="_blank" rel="noopener">Contributing</a>
+        <a href="https://github.com/truthlens/blob/main/CHANGELOG.md" class="ft-link" target="_blank" rel="noopener">Changelog</a>
+      </div>
+      <div>
+        <div class="ft-col-title">Privacy</div>
+        <a href="#howitworks" class="ft-link">How It Works</a>
+        <a href="#" class="ft-link">Zero Retention</a>
+        <a href="#" class="ft-link">MIT License</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2026 TruthLens. Released under MIT License.</span>
+      <div class="ft-right">
+        <a href="https://github.com/truthlens" class="ft-gh" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          View on GitHub
+        </a>
+        <span class="ft-ver">v1.2 Beta</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────
+// API CONFIGURATION
+// Set API_BASE_URL to your deployed backend URL after deployment.
+// Example: const API_BASE_URL = 'https://truthlens.onrender.com';
+// For local dev, leave as empty string (proxied via same origin or localhost:8000).
+// ─────────────────────────────────────────────────────────
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000';
+
+const ENDPOINTS = {
+  image: `${API_BASE_URL}/detect/image`,
+  video: `${API_BASE_URL}/detect/video`,
+  audio: `${API_BASE_URL}/detect/audio`,
+  news:  `${API_BASE_URL}/detect/news`,
+};
+
+const SCAN_TIMEOUT_MS = 60000; // 60s for video
+
+// ─── TOAST ────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => { t.className = ''; }, 3200);
+}
+
+// ─── NAV ─────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+const navLinks = document.querySelectorAll('.nav-links a');
+const sectionIds = ['features', 'scan', 'api'];
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-48px 0px -60% 0px' });
+sectionIds.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+// ─── MOBILE NAV ───────────────────────────────────────────
+let mobNavOpen = false;
+function toggleMobNav() { mobNavOpen ? closeMobNav() : openMobNav(); }
+function openMobNav() {
+  mobNavOpen = true;
+  const nav = document.getElementById('mobNav');
+  nav.classList.add('open');
+  requestAnimationFrame(() => requestAnimationFrame(() => nav.classList.add('visible')));
+  document.getElementById('mobMenuBtn').setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobNav() {
+  mobNavOpen = false;
+  const nav = document.getElementById('mobNav');
+  nav.classList.remove('visible');
+  document.getElementById('mobMenuBtn').setAttribute('aria-expanded', 'false');
+  setTimeout(() => nav.classList.remove('open'), 260);
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobNavOpen) closeMobNav(); });
+
+// ─── TAB SWITCHING ────────────────────────────────────────
+let currentTab = 'image';
+const tabConfig = {
+  image: { accept: 'image/*', main: 'Drop image or click to upload', sub: 'JPG, PNG, WEBP · Max 20MB', tags: ['JPG','PNG','WEBP','HEIC'] },
+  video: { accept: 'video/*', main: 'Drop video or click to upload', sub: 'MP4, MOV, AVI · Max 200MB', tags: ['MP4','MOV','AVI','MKV'] },
+  audio: { accept: 'audio/*', main: 'Drop audio or click to upload', sub: 'MP3, WAV, M4A · Max 50MB', tags: ['MP3','WAV','M4A','OGG'] },
+};
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.scan-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+  btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+  const isNews = tab === 'news';
+  document.getElementById('tab-file').style.display = isNews ? 'none' : 'block';
+  document.getElementById('tab-news').style.display = isNews ? 'block' : 'none';
+  if (!isNews) {
+    const cfg = tabConfig[tab];
+    document.getElementById('fileInput').accept = cfg.accept;
+    document.getElementById('dropMain').textContent = cfg.main;
+    document.getElementById('dropSub').textContent = cfg.sub;
+    document.getElementById('fmtTags').innerHTML = cfg.tags.map(t => `<span class="fmt-tag">${t}</span>`).join('');
+    clearFile();
+  }
+  resetResult();
+}
+
+// ─── FILE HANDLING ────────────────────────────────────────
+let selFile = null;
+const MAX_SIZES = { image: 20 * 1024 * 1024, video: 200 * 1024 * 1024, audio: 50 * 1024 * 1024 };
+
+function handleFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const maxSize = MAX_SIZES[currentTab] || MAX_SIZES.image;
+  if (f.size > maxSize) { showToast(`File too large. Max ${formatSize(maxSize)} for ${currentTab}.`, 'danger'); clearFile(); return; }
+  selFile = f;
+  const isAudio = currentTab === 'audio' || f.type.startsWith('audio/');
+  const isImg = f.type.startsWith('image/');
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('audioPreview').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'none';
+  if (isImg) {
+    const r = new FileReader();
+    r.onload = e => { document.getElementById('previewImg').src = e.target.result; document.getElementById('previewWrap').style.display = 'block'; };
+    r.readAsDataURL(f);
+  } else if (isAudio) {
+    buildWaveform();
+    document.getElementById('audioFileName').textContent = f.name;
+    document.getElementById('audioFileDur').textContent = formatSize(f.size);
+    document.getElementById('audioPreview').style.display = 'block';
+  } else {
+    document.getElementById('dropZone').style.display = 'block';
+    document.getElementById('dropZone').style.pointerEvents = 'none';
+    document.getElementById('dropMain').textContent = f.name;
+    document.getElementById('dropSub').textContent = `${formatSize(f.size)} · ${f.type || 'video'}`;
+    document.getElementById('fmtTags').innerHTML = '';
+  }
+  document.getElementById('scanBtn').disabled = false;
+  resetResult();
+}
+
+function buildWaveform() {
+  const wf = document.getElementById('audioWaveform');
+  wf.innerHTML = '';
+  for (let i = 0; i < 48; i++) {
+    const b = document.createElement('div');
+    b.className = 'wf-bar';
+    b.style.height = Math.max(8, Math.floor(Math.random() * 100 * Math.sin((i / 48) * Math.PI + .5))) + '%';
+    b.style.background = i < 26 ? 'var(--accent)' : 'var(--border2)';
+    b.style.animationDelay = (i * 0.04) + 's';
+    wf.appendChild(b);
+  }
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(1) + ' MB';
+}
+
+function clearFile() {
+  selFile = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('dropZone').style.display = 'block';
+  document.getElementById('dropZone').style.pointerEvents = '';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('audioPreview').style.display = 'none';
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('uploadProgress').style.display = 'none';
+  const cfg = tabConfig[currentTab];
+  if (cfg) {
+    document.getElementById('dropMain').textContent = cfg.main;
+    document.getElementById('dropSub').textContent = cfg.sub;
+    document.getElementById('fmtTags').innerHTML = cfg.tags.map(t => `<span class="fmt-tag">${t}</span>`).join('');
+  }
+  resetResult();
+}
+
+function updateWC() {
+  const t = document.getElementById('newsInput').value.trim();
+  const w = t ? t.split(/\s+/).filter(Boolean).length : 0;
+  const el = document.getElementById('wcCount');
+  el.textContent = w + ' words';
+  el.style.color = w >= 20 ? 'var(--success)' : 'var(--text3)';
+}
+
+// ─── DRAG AND DROP ────────────────────────────────────────
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', e => { if (!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over'); });
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('fileInput').files = dt.files; handleFile(document.getElementById('fileInput')); }
+});
+
+// ─── PROGRESS BAR ─────────────────────────────────────────
+function simulateUploadProgress() {
+  const prog = document.getElementById('uploadProgress');
+  const fill = document.getElementById('upFill');
+  const pct = document.getElementById('upPct');
+  prog.style.display = 'block';
+  let v = 0;
+  const iv = setInterval(() => {
+    v += Math.random() * 18;
+    if (v >= 92) { v = 92; clearInterval(iv); }
+    fill.style.width = v + '%';
+    pct.textContent = Math.floor(v) + '%';
+  }, 120);
+  return () => { clearInterval(iv); fill.style.width = '100%'; pct.textContent = '100%'; setTimeout(() => { prog.style.display = 'none'; }, 400); };
+}
+
+// ─── RESULT STATE ─────────────────────────────────────────
+function setStatus(s) {
+  const dot = document.getElementById('rpDot');
+  const txt = document.getElementById('rpStatusTxt');
+  dot.className = 'rp-dot';
+  const map = { idle: ['', 'Idle'], scanning: ['scanning', 'Analyzing…'], success: ['success', 'Authentic'], danger: ['danger', 'AI Detected'] };
+  const [cls, label] = map[s] || ['', '—'];
+  if (cls) dot.classList.add(cls);
+  txt.textContent = label;
+}
+
+function hideAll() {
+  ['rpIdle','rpLoading','rpResult','rpError'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+}
+
+function resetResult() {
+  hideAll();
+  document.getElementById('rpIdle').style.display = 'flex';
+  setStatus('idle');
+  document.getElementById('aiBar').style.width = '0%';
+  document.getElementById('realBar').style.width = '0%';
+  document.getElementById('aiPct').textContent = '—';
+  document.getElementById('realPct').textContent = '—';
+}
+
+function showLoading() {
+  hideAll();
+  document.getElementById('st1').className = 'rp-step done';
+  document.getElementById('st2').className = 'rp-step active';
+  document.getElementById('st3').className = 'rp-step';
+  document.getElementById('rpLoading').style.display = 'flex';
+  setStatus('scanning');
+  setTimeout(() => { document.getElementById('st2').className = 'rp-step done'; document.getElementById('st3').className = 'rp-step active'; }, 700);
+  setTimeout(() => { document.getElementById('st3').className = 'rp-step done'; }, 1400);
+}
+
+function showResult(isNeg, label, aiScore, realScore, isAudioAI) {
+  hideAll();
+  document.getElementById('rpResult').style.display = 'flex';
+  const vCard = document.getElementById('verdictCard');
+  const vEye = document.getElementById('verdictEyebrow');
+  const vName = document.getElementById('verdictName');
+  const vConf = document.getElementById('verdictConf');
+  const vSvg = document.getElementById('verdictSvg');
+  const aiFill = document.getElementById('aiBar');
+
+  if (isNeg && isAudioAI) {
+    vCard.className = 'verdict-card audio-ai';
+    vEye.textContent = 'Voice Clone Detected';
+    vSvg.innerHTML = '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>';
+    aiFill.className = 'score-fill p';
+    setStatus('danger');
+  } else if (isNeg) {
+    vCard.className = 'verdict-card ai';
+    vEye.textContent = 'AI-Generated Content';
+    vSvg.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+    aiFill.className = 'score-fill d';
+    setStatus('danger');
+  } else {
+    vCard.className = 'verdict-card real';
+    vEye.textContent = 'Authentic Content';
+    vSvg.innerHTML = '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>';
+    aiFill.className = 'score-fill d';
+    setStatus('success');
+  }
+
+  vName.textContent = label;
+  vConf.textContent = (isNeg ? aiScore : realScore).toFixed(1) + '% confidence';
+
+  setTimeout(() => {
+    document.getElementById('aiBar').style.width = Math.min(aiScore, 100) + '%';
+    document.getElementById('realBar').style.width = Math.min(realScore, 100) + '%';
+    document.getElementById('aiPct').textContent = aiScore.toFixed(1) + '%';
+    document.getElementById('realPct').textContent = realScore.toFixed(1) + '%';
+  }, 120);
+
+  document.getElementById('analysisNote').textContent = isNeg
+    ? 'Synthetic signatures detected. Statistical patterns in this content are inconsistent with authentic media captured by real-world sensors or produced by a human.'
+    : 'No synthetic signatures detected. Content passed all model checks and appears authentic based on evaluated features and patterns.';
+}
+
+function showError(msg) {
+  hideAll();
+  document.getElementById('rpError').style.display = 'flex';
+  if (msg) document.getElementById('rpError').querySelector('p').textContent = msg;
+  setStatus('idle');
+}
+
+// ─── SCAN: MEDIA ──────────────────────────────────────────
+async function doScan() {
+  if (!selFile) return;
+  const btn = document.getElementById('scanBtn');
+  btn.disabled = true; btn.classList.add('loading');
+  showLoading();
+
+  const endpoint = ENDPOINTS[currentTab] || ENDPOINTS.image;
+  const finishProgress = simulateUploadProgress();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SCAN_TIMEOUT_MS);
+
+  try {
+    const form = new FormData();
+    form.append('file', selFile);
+    const res = await fetch(endpoint, { method: 'POST', body: form, signal: controller.signal });
+    clearTimeout(timeout);
+    finishProgress();
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.detail || `Server error ${res.status}`);
+    }
+    const d = await res.json();
+    const r = d.result;
+    const aiScore = r.fake_score ?? r.ai_score ?? (r.is_ai_generated ? r.confidence : 100 - r.confidence);
+    const realScore = r.real_score ?? (100 - aiScore);
+    const isAudioAI = currentTab === 'audio' && (r.is_fake || r.is_ai_generated);
+    showResult(r.is_ai_generated || r.is_fake, r.label, aiScore, realScore, isAudioAI);
+  } catch (e) {
+    clearTimeout(timeout);
+    finishProgress();
+    if (e.name === 'AbortError') {
+      showError('Analysis timed out. The backend may be overloaded — try again.');
+    } else if (e.message === 'Failed to fetch') {
+      document.getElementById('rpError').querySelector('p').textContent = 'Start the backend to enable live detection:';
+      showError(null);
+    } else {
+      showError(e.message);
+    }
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+}
+
+// ─── SCAN: NEWS ───────────────────────────────────────────
+async function doNewsScan() {
+  const text = document.getElementById('newsInput').value.trim();
+  if (text.split(/\s+/).filter(Boolean).length < 20) {
+    showToast('Please enter at least 20 words for news verification.', 'danger'); return;
+  }
+  const btn = document.getElementById('newsScanBtn');
+  btn.disabled = true; btn.classList.add('loading');
+  showLoading();
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SCAN_TIMEOUT_MS);
+
+  try {
+    const form = new FormData();
+    form.append('text', text);
+    const res = await fetch(ENDPOINTS.news, { method: 'POST', body: form, signal: controller.signal });
+    clearTimeout(timeout);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.detail || `Server error ${res.status}`);
+    }
+    const d = await res.json();
+    const r = d.result;
+    const isFake = r.is_fake ?? r.label === 'FAKE';
+    const conf = r.confidence ?? 50;
+    const aiScore = isFake ? conf : 100 - conf;
+    const realScore = 100 - aiScore;
+    showResult(isFake, r.label, aiScore, realScore, false);
+  } catch (e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') showError('Verification timed out. Try again.');
+    else showError('Backend unreachable — start the server to enable news verification.');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+}
+
+// ─── CODE COPY ────────────────────────────────────────────
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!'; btn.style.color = 'var(--success)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 2200);
+  }).catch(() => showToast('Could not copy — select manually.', 'danger'));
+}
+
+// ─── SMOOTH SCROLL ────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const hash = a.getAttribute('href');
+    if (hash === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(hash);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ─── FADE IN ──────────────────────────────────────────────
+const ioFade = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ioFade.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fu').forEach(el => ioFade.observe(el));
+</script>
+</body>
+</html>
