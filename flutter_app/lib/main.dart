@@ -505,8 +505,8 @@ class _ImgState extends State<ImageDetectScreen> {
         contentType: MediaType(parts[0], parts[1]),
       ));
       var streamedResponse = await req.send().timeout(const Duration(seconds: 60));
-      var r = await http.Response.fromStream(streamedResponse);
-      var d = jsonDecode(r.body);
+      var body = await streamedResponse.stream.bytesToString(); // ✅ FIXED
+      var d = jsonDecode(body);
       setState(() { _res = d['result']; _loading = false; });
     } catch (_) {
       setState(() => _loading = false);
@@ -612,8 +612,8 @@ class _VidState extends State<VideoDetectScreen> {
       req.files.add(await http.MultipartFile.fromPath('file', _vid!.path,
         contentType: MediaType('video', 'mp4')));
       var streamedResponse = await req.send().timeout(const Duration(seconds: 120));
-      var r = await http.Response.fromStream(streamedResponse);
-      var d = jsonDecode(r.body);
+      var body = await streamedResponse.stream.bytesToString(); // ✅ FIXED
+      var d = jsonDecode(body);
       setState(() { _res = d['result']; _loading = false; });
     } catch (_) { setState(() => _loading = false); }
   }
@@ -818,8 +818,8 @@ class _AudioState extends State<AudioDetectScreen> {
       req.files.add(await http.MultipartFile.fromPath('file', _audio!.path,
         contentType: MediaType(parts[0], parts[1])));
       var streamedResponse = await req.send().timeout(const Duration(seconds: 60));
-      var r = await http.Response.fromStream(streamedResponse);
-      var d = jsonDecode(r.body);
+      var body = await streamedResponse.stream.bytesToString(); // ✅ FIXED
+      var d = jsonDecode(body);
       setState(() { _res = d['result']; _loading = false; });
     } catch (e) {
       setState(() => _loading = false);
